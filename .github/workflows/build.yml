@@ -11,16 +11,19 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/upload-artifact@v3
         with:
+          name: release-asset-foo.txt
           path: release-asset-foo.txt
           if-no-files-found: error
           retention-days: 2
       - uses: actions/upload-artifact@v3
         with:
+          name: release-asset-bar.txt
           path: release-asset-bar.txt
           if-no-files-found: error
           retention-days: 2
       - uses: actions/upload-artifact@v3
         with:
+          name: non-release-artifact.txt
           path: non-release-artifact.txt
           if-no-files-found: error
           retention-days: 2
