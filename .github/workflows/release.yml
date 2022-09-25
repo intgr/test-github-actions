@@ -1,0 +1,27 @@
+name: Release build
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+          # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#release
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./release-asset-foo.txt
+          asset_name: release-asset-foo.txt
+          asset_content_type: text/plain

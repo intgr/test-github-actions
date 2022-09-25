@@ -1,0 +1,17 @@
+name: Build
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: '*.txt'
+          if-no-files-found: error
+          retention-days: 2
