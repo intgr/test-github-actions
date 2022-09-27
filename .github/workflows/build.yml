@@ -41,12 +41,13 @@ jobs:
                 head_sha: context.sha,
                 // May actually be a tag name.
                 branch: process.env.GITHUB_REF_NAME,
-            });
+            }).data.workflow_runs;
             
             console.log('Runs: ', runs);
             const artifacts = [];
 
             for (const run in runs) {
+                console.log('Run: ', run);
                 const runArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                     owner,
                     repo,
