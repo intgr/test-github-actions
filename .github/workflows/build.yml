@@ -52,7 +52,9 @@ jobs:
                     repo,
                     run_id: run.id,
                 });
-
+                
+                console.log("Artifacts count: ", runArtifacts.data.total_count);
+                console.log("Artifacts: ", runArtifacts.data.artifacts);
                 for (const artifact of runArtifacts.data.artifacts) {
                     console.log('Artifact: ', artifact);
                 }
