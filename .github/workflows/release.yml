@@ -2,9 +2,6 @@ name: Release build
 on:
   release:
     types: [published]
-  push:
-  pull_request:
-  repository_dispatch:
 
 jobs:
   build:

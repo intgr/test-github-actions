@@ -27,3 +27,33 @@ jobs:
           path: non-release-artifact.txt
           if-no-files-found: error
           retention-days: 2
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            console.log('Context: ', context);
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner,
+                repo,
+                head_sha: context.sha,
+                // May actually be a tag name.
+                branch: process.env.GITHUB_REF_NAME,
+            });
+            
+            console.log('Runs: ', runs);
+            const artifacts = [];
+
+            for (const run in runs) {
+                const runArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                });
+            
+                for (const artifact in runArtifacts) {
+                    console.log('Artifact: ', artifact);
+                }
+            }
