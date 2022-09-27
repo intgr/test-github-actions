@@ -16,7 +16,7 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            console.log(context);
+            // console.log('Context: ', context);
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
@@ -27,26 +27,21 @@ jobs:
                 // May actually be a tag name.
                 branch: process.env.GITHUB_REF_NAME,
             });
-            
-            console.log(runs);
+            // console.log('Runs.data.workflow_runs: ', runs.data.workflow_runs);
             const artifacts = [];
 
-            for (const run in runs) {
+            for (const run of runs.data.workflow_runs) {
+                console.log('Run: ', run);
                 const runArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                     owner,
                     repo,
                     run_id: run.id,
                 });
                 
-                for (const artifact in runArtifacts.data.artifacts) {
-                    console.log(artifact)
+                console.log("Artifacts count: ", runArtifacts.data.total_count);
+                console.log("Artifacts: ", runArtifacts.data.artifacts);
+                for (const artifact of runArtifacts.data.artifacts) {
+                    console.log('Artifact: ', artifact);
                 }
             }
-              
-            
-#                .createComment({
-#              issue_number: context.issue.number,
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              body: '👋 Thanks for reporting!'
-#            })
+
