@@ -2,26 +2,54 @@ name: Release build
 on:
   release:
     types: [published]
+  push:
+  pull_request:
+  repository_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifacts
+# NOPE: https://api.github.com/repos/intgr/test-github-actions/actions/artifacts
+# https://api.github.com/repos/intgr/test-github-actions/actions/workflows/35763544/runs?head_sha=fa997e209ab5a98af40731b61ae38f5c37685b30&branch=0.0.1
+# https://api.github.com/repos/intgr/test-github-actions/actions/workflows/build.yml/runs?head_sha=fa997e209ab5a98af40731b61ae38f5c37685b30&branch=0.0.1
+# https://api.github.com/repos/intgr/test-github-actions/actions/runs?head_sha=fa997e209ab5a98af40731b61ae38f5c37685b30&branch=0.0.1
+# https://api.github.com/repos/intgr/test-github-actions/actions/runs/3122506296/artifacts
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/github-script@v6
         with:
-          # https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
-          # https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#release
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./release-asset-foo.txt
-          asset_name: release-asset-foo.txt
-          asset_content_type: text/plain
+          script: |
+            console.log(context);
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner,
+                repo,
+                head_sha: context.sha,
+                // May actually be a tag name.
+                branch: process.env.GITHUB_REF_NAME,
+            });
+            
+            console.log(runs);
+            const artifacts = [];
+
+            for (const run in runs) {
+                const runArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                });
+                
+                for (const artifact in runArtifacts) {
+                    console.log(artifact)
+                }
+            }
+              
+            
+#                .createComment({
+#              issue_number: context.issue.number,
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              body: '👋 Thanks for reporting!'
+#            })
