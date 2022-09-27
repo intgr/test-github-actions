@@ -52,8 +52,8 @@ jobs:
                     repo,
                     run_id: run.id,
                 });
-            
-                for (const artifact in runArtifacts) {
+
+                for (const artifact of runArtifacts) {
                     console.log('Artifact: ', artifact);
                 }
             }
