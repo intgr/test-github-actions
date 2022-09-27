@@ -31,7 +31,7 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            console.log('Context: ', context);
+            // console.log('Context: ', context);
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
@@ -45,7 +45,7 @@ jobs:
             // console.log('Runs.data.workflow_runs: ', runs.data.workflow_runs);
             const artifacts = [];
 
-            for (const run in runs.data.workflow_runs) {
+            for (const run of runs.data.workflow_runs) {
                 console.log('Run: ', run);
                 const runArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                     owner,
